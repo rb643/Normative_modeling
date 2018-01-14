@@ -7,7 +7,8 @@
             "MatchIt","optmatch","data.table","plotrix","ggthemes",
             "viridis","coin","plyr","psytabs","RColorBrewer",
             "msir","lmtest", "ggpubr","stats", "reshape2","xtable",
-            "ez","apa","parallel", "jmuOutlier","Rtsne","fpc", "cluster")
+            "ez","apa","parallel", "jmuOutlier","Rtsne","fpc", "cluster",
+            "RCurl")
 
   # check if they are already installed and otherwise install them (not that
   # this doesn't work for biocLite tools!)
@@ -31,8 +32,8 @@ source("./Scripts/2_localRegression.R")
 source("./Scripts/3a_SymptomCorrelations.R")
 
 # get some basic group comparisons done
-Job1 = mcparallel(basicStats(measure = "CT", parcellation = "500aparc")))
-Job2 = mcparallel(basicStats(measure = "CT", parcellation = "HCP")))
+Job1 = mcparallel(basicStats(measure = "CT", parcellation = "500aparc"))
+Job2 = mcparallel(basicStats(measure = "CT", parcellation = "HCP"))
 mccollect(list(Job1, Job2))
 
 # can't do this in parallel cause the underlying function also assigns multi-core processing
