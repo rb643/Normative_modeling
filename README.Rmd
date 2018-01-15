@@ -64,9 +64,9 @@ localRegression(measure = "CT", parcellation = "500aparc")
 
 ## Run stats
 This function: 
-⋅⋅*runs the canonical linear mixed effects model for conventional case-control analysis
-⋅⋅*runs the canonical linear mixed effects model for conventional case-control analysis, with w-score outliers removed
-⋅⋅*runs the a one-sample test on the w-scores (with scanner site regressed out), with outliers removed
+*runs the canonical linear mixed effects model for conventional case-control analysis
+*runs the canonical linear mixed effects model for conventional case-control analysis, with w-score outliers removed
+*runs the a one-sample test on the w-scores (with scanner site regressed out), with outliers removed
 ```{r, include=FALSE}
 basicStats(measure = "CT", parcellation = "500aparc")
 ```
