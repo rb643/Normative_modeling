@@ -1,6 +1,5 @@
-rm(list = ls()) # clear the workspace
-measure <- "LGI"
-parcellation <- "500aparc"
+mergeData <- function(measure, parcellation,...) {
+
 basedir <- paste("./Output_",parcellation,"/",measure,"_Age_IQ_Match/",sep="")
 if (!dir.exists(basedir))(
   dir.create(basedir)
@@ -194,3 +193,4 @@ site <- demographicTable(combinedData$DX_GROUP, combinedData$SITE_ID, count = TR
 site <- site[-c(1),]
 write.csv(site,paste(basedir,"/site_distribution_PostMatch.csv",sep=""))
 rm(site)
+}

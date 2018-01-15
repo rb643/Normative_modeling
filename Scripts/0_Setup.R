@@ -26,10 +26,11 @@
 # on the folder structure and thus might require some editing while running it
 # but for the other steps:
 # run forest run!
-source("./Scripts/1b_BasicStats.R")
-source("./Scripts/1c_variancePartition.R")
+
+source("./Scripts/variancePart.R")
 source("./Scripts/2_localRegression.R")
-source("./Scripts/3a_SymptomCorrelations.R")
+source("./Scripts/3_Stats.R")
+source("./Scripts/4_SymptomCorrelations.R")
 
 # get some basic group comparisons done
 Job1 = mcparallel(basicStats(measure = "CT", parcellation = "500aparc"))

@@ -149,13 +149,15 @@ plots[[i]] <- ggplot(Voltemp, aes(x=Age, y=Value, fill = Group)) + # make basic 
   facet_wrap(~Sex)
 }
 
-print("Printing local regression plots")
-pdf(paste(zdir,"SmoothedCurves.pdf",sep=""), onefile = TRUE, paper = "a4r")
-for (i in seq(length(plots))) {
-  print(plots[[i]])
-}
-dev.off()
-rm(pcol,plots,i,Vol,Voltemp)
+## optional printing of all curves for each brain region
+## this takes really long so optional!
+# print("Printing local regression plots")
+# pdf(paste(zdir,"SmoothedCurves.pdf",sep=""), onefile = TRUE, paper = "a4r")
+# for (i in seq(length(plots))) {
+#   print(plots[[i]])
+# }
+# dev.off()
+# rm(pcol,plots,i,Vol,Voltemp)
 
 # plot z-scores for autism group
 zregions <- sapply(columnnames, function(x) paste(x, "_z", sep=""))
@@ -180,7 +182,7 @@ plots[[i]] <- ggplot(zVoltemp, aes(x=Age, y=ZScore)) + # make basic plot
                     plot.background = element_rect(fill="gray30"),
                     panel.background = element_rect(fill="gray30"),
                     axis.text.y = element_text(color="white", size=rel(1)),
-                    axis.text.x = element_text(color="white", size=rel(1)),,
+                    axis.text.x = element_text(color="white", size=rel(1)),
                     axis.title.x = element_text(color="white", size=rel(1)),
                     axis.title.y = element_text(color="white", size=rel(1)),
                     panel.grid.minor.x = element_blank(),
@@ -193,11 +195,13 @@ plots[[i]] <- ggplot(zVoltemp, aes(x=Age, y=ZScore)) + # make basic plot
   facet_wrap(~Sex, scales = "free")
 }
 
-print("Printing z-score plots")
-pdf(paste(zdir,"ASD_Wscores.pdf",sep=""), onefile = TRUE, paper = "a4r")
-for (i in seq(length(plots))) {
-  print(plots[[i]])
-}
-dev.off()
-rm(zregions, ASD,zVol,plots,i,zVoltemp, pcol)
+## optional printing of all curves for each brain region
+## this takes really long so optional!
+# print("Printing z-score plots")
+# pdf(paste(zdir,"ASD_Wscores.pdf",sep=""), onefile = TRUE, paper = "a4r")
+# for (i in seq(length(plots))) {
+#   print(plots[[i]])
+# }
+# dev.off()
+# rm(zregions, ASD,zVol,plots,i,zVoltemp, pcol)
 }

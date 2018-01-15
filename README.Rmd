@@ -1,7 +1,6 @@
 ---
 title: "Normative modeling readme"
 author: "Richard"
-date: "14/01/2018"
 output: html_document
 ---
 # Normative modeling in Autism - readme file
@@ -14,7 +13,7 @@ general setup script to load all packages and install them if the are not alread
   rm(list = ls()) # clear the workspace
   library(easypackages) # then we can do the rest in one go
   
-  # get a list of useful packages
+  # get a list of all potentially useful packages
   list.of.packages <- c("Hmisc","ggplot2","caret","gplots","Rmisc","dplyr",
             "MatchIt","optmatch","data.table","plotrix","ggthemes",
             "viridis","coin","plyr","psytabs","RColorBrewer",
@@ -22,8 +21,8 @@ general setup script to load all packages and install them if the are not alread
             "ez","apa","parallel", "jmuOutlier","Rtsne","fpc", "cluster",
             "RCurl")
 
-  # check if they are already installed and otherwise install them (not that
-  # this doesn't work for biocLite tools!)
+  # check if they are already installed and otherwise install them
+  # note: this doesn't work for biocLite tools
   new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
   if(length(new.packages)>0) { install.packages(new.packages)}
 
@@ -38,37 +37,45 @@ general setup script to load all packages and install them if the are not alread
   setwd("~")
 
   source("./Scripts/variancePart.R")
+  source("./Scripts/1_MergingData.R")
   source("./Scripts/2_localRegression.R")
   source("./Scripts/3_Stats.R")
   source("./Scripts/4_SymptomCorrelations.R")
 ```
 
 ## Data merging
-
+Merge ABIDE I and ABIDE II into one dataframe taking all overlapping columns and adding in all anatomical data. In addition, this script runs basic matching using the nearest neighbour matching algorith from the match.it package (http://gking.harvard.edu/matchit). Finally it plots and writes out some descriptive statistics and created the basic output structure that subsequent function rely upon.
+```{r, include=FALSE}
+mergeData(measure = "CT", parcellation = "500aparc")
+```
 
 ## Data inspection
+This function runs variance partitioning (Hoffman & Schadt 2006: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5123296/) for the most common variables and prints the result to a PDF.
 ```{r, include=FALSE}
 varianceStats(measure = "CT", parcellation = "500aparc")
 
 ```
 
-## Local regression and obtaining normative scores
+## Local regression and calculation of normative
+This function runs LOESS regression on the normative data, bins the data by age and then uses the age-bin specific mean to compute a w-score for all individuals with autism. The function also contains some plotting options to plot curves for every individual brain region, but to save time these are currently commented out.
 ```{r, include=FALSE}
-Job1 = mcparallel(localRegression(measure = "CT", parcellation = "HCP"))
-Job2 = mcparallel(localRegression(measure = "CT", parcellation = "500aparc"))
-mccollect(list(Job1, Job2))
+localRegression(measure = "CT", parcellation = "500aparc")
 ```
 
 ## Run stats
+This function: 
+⋅⋅*runs the canonical linear mixed effects model for conventional case-control analysis
+⋅⋅*runs the canonical linear mixed effects model for conventional case-control analysis, with w-score outliers removed
+⋅⋅*runs the a one-sample test on the w-scores (with scanner site regressed out), with outliers removed
 ```{r, include=FALSE}
-Job1 = mcparallel(basicStats(measure = "CT", parcellation = "500aparc"))
-Job2 = mcparallel(basicStats(measure = "CT", parcellation = "HCP"))
-mccollect(list(Job1, Job2))
+basicStats(measure = "CT", parcellation = "500aparc")
 ```
 
 ## Symptom*W-Score correlation
+This computes spearman correlation between w-scores and most common phenotypic variables
 ```{r, include=FALSE}
-Job1 = mcparallel(symptomCorrelation(measure = "CT", parcellation = "HCP"))
-Job2 = mcparallel(symptomCorrelation(measure = "CT", parcellation = "500aparc"))
-mccollect(list(Job1, Job2))
+symptomCorrelation(measure = "CT", parcellation = "500aparc")
 ```
+
+# Optional other functions
+The above function are all dependent on each other and should thus be run in succession. However, with other parcellations or metrics each step should also be doable using the mcparallel function
