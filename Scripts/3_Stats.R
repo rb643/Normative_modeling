@@ -55,7 +55,7 @@ adjustedP <- p.adjust(Pv[,2], method = "fdr")
 MixedModel_Dx <- cbind(Fv[,2], Pv[,2],adjustedP,CohensD)
 rownames(MixedModel_Dx) <- unique(df$variable)
 colnames(MixedModel_Dx) <- c("F","P","CorrectedP","CohensD")
-write.csv(MixedModel_Dx, file = "./anovadir/MixedModelDx.csv", row.names = FALSE, col.names = FALSE)
+write.csv(MixedModel_Dx, file = paste(anovadir,"/MixedModelDx.csv", sep=""), row.names = FALSE, col.names = FALSE)
 
 ## Linear Mixed-Effect models removing outliers
 load("./Output_500aparc/CT_Age_IQ_Match/W/CommonPheno_Wscores.RData")
@@ -101,7 +101,7 @@ sum(adjustedP2 < 0.05)
 MixedModel_Dx <- cbind(Fv[,2], Pv[,2],adjustedP2,CohensD)
 rownames(MixedModel_Dx) <- unique(df$variable)
 colnames(MixedModel_Dx) <- c("F","P","CorrectedP","CohensD")
-write.csv(MixedModel_Dx, file = "./anovadir/MixedModelDx_Outliers.csv", row.names = FALSE, col.names = FALSE)
+write.csv(MixedModel_Dx, file = paste(anovadir,"/MixedModelDx_Outliers.csv",sep=""), row.names = FALSE, col.names = FALSE)
 
 ## one sample test on w-scores
 regressionData <- combinedData.M.ASD[,as.character(columnnames2)]
@@ -122,5 +122,5 @@ for (i in 1:ncol(r)) {
 adjustedP <- p.adjust(ps, method = "fdr")
 WModel <- cbind(ps, adjustedP,e)
 colnames(WModel) <- c("p","adjusted_p","d")
-write.csv(MixedModel_Dx, file = "./anovadir/WModel_Outliers.csv", row.names = FALSE, col.names = FALSE)
+write.csv(MixedModel_Dx, file = paste(anovadir,"/WModel_Outliers.csv",sep=""), row.names = FALSE, col.names = FALSE)
 }
