@@ -63,7 +63,7 @@ This function runs LOESS regression on the normative data, bins the data by age 
 localRegression(measure = "CT", parcellation = "500aparc")
 
 #as follows:
-(![image]("./plots/Overview2.png")
+(![image](./Plots/Overview2.png)
 ```
 
 ## Run stats
