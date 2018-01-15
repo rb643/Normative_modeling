@@ -51,7 +51,7 @@ This function runs variance partitioning (Hoffman & Schadt 2006: https://www.ncb
 ```{r, include=FALSE}
 varianceStats(measure = "CT", parcellation = "500aparc")
 ```
-![image](./Plots/VarianceContribution.pdf)
+![image](./Plots/VarianceContribution.png)
 
 ## Local regression and calculation of normative
 This function runs LOESS regression on the normative data, bins the data by age and then uses the age-bin specific mean to compute a w-score for all individuals with autism. The function also contains some plotting options to plot curves for every individual brain region, but to save time these are currently commented out.
