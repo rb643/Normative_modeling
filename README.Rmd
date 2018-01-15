@@ -64,7 +64,7 @@ localRegression(measure = "CT", parcellation = "500aparc")
 
 #as follows:
 img1_path <- "plots/Overview2.png"
-include_graphics(img1_path)
+(![image](img1_path)
 ```
 
 ## Run stats
