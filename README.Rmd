@@ -9,7 +9,7 @@ output: html_document
 general setup script to load all packages and install them if the are not already on the system
 
 ```{r, include=FALSE}
-  install.packages('easypackages')
+  #install.packages('easypackages')
   rm(list = ls()) # clear the workspace
   library(easypackages) # then we can do the rest in one go
   
@@ -19,7 +19,7 @@ general setup script to load all packages and install them if the are not alread
             "viridis","coin","plyr","psytabs","RColorBrewer",
             "msir","lmtest", "ggpubr","stats", "reshape2","xtable",
             "ez","apa","parallel", "jmuOutlier","Rtsne","fpc", "cluster",
-            "RCurl","plyr")
+            "RCurl","plyr","nlme")
 
   # check if they are already installed and otherwise install them
   # note: this doesn't work for biocLite tools
@@ -41,7 +41,7 @@ general setup script to load all packages and install them if the are not alread
 ```
 
 ## Data merging
-Merge ABIDE I and ABIDE II into one dataframe taking all overlapping columns and adding in all anatomical data. In addition, this script runs basic matching using the nearest neighbour matching algorith from the match.it package (http://gking.harvard.edu/matchit). Finally it plots and writes out some descriptive statistics and creates the basic output structure that subsequent function rely upon.
+Merge ABIDE I and ABIDE II into one dataframe taking all overlapping columns and adding in all anatomical data. In addition, this script runs basic matching using the nearest neighbour matching algorith from the match.it package (http://gking.harvard.edu/matchit). Finally it plots and writes out some descriptive statistics and creates the basic output structure that subsequent functions rely upon.
 ```{r, include=FALSE}
 mergeData(measure = "CT", parcellation = "500aparc")
 ```
@@ -56,16 +56,19 @@ varianceStats(measure = "CT", parcellation = "500aparc")
 ## Local regression and calculation of normative
 This function runs LOESS regression on the normative data, bins the data by age and then uses the age-bin specific mean to compute a w-score for all individuals with autism. The function also contains some plotting options to plot curves for every individual brain region, but to save time these are currently commented out.
 
+Like this:
+![image](./Plots/Overview2.png)
+
 ```{r, include=FALSE}
 localRegression(measure = "CT", parcellation = "500aparc")
 ```
-like this:
-![image](./Plots/Overview2.png)
+
 ## Run stats
 This function: 
 * runs the canonical linear mixed effects model for conventional case-control analysis
 * runs the canonical linear mixed effects model for conventional case-control analysis, with w-score outliers removed
 * runs the a one-sample test on the w-scores (with scanner site regressed out), with outliers removed
+The resulting csv files were subsequently plotted using the whitakerlab pysurfer tools: https://github.com/WhitakerLab/BrainsForPublication
 ```{r, include=FALSE}
 basicStats(measure = "CT", parcellation = "500aparc")
 ```
