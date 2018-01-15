@@ -58,8 +58,13 @@ varianceStats(measure = "CT", parcellation = "500aparc")
 
 ## Local regression and calculation of normative
 This function runs LOESS regression on the normative data, bins the data by age and then uses the age-bin specific mean to compute a w-score for all individuals with autism. The function also contains some plotting options to plot curves for every individual brain region, but to save time these are currently commented out.
+
 ```{r, include=FALSE}
 localRegression(measure = "CT", parcellation = "500aparc")
+
+#as follows:
+img1_path <- "plots/Overview2.png"
+include_graphics(img1_path)
 ```
 
 ## Run stats
