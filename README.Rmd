@@ -19,7 +19,7 @@ general setup script to load all packages and install them if the are not alread
             "viridis","coin","plyr","psytabs","RColorBrewer",
             "msir","lmtest", "ggpubr","stats", "reshape2","xtable",
             "ez","apa","parallel", "jmuOutlier","Rtsne","fpc", "cluster",
-            "RCurl")
+            "RCurl","plyr")
 
   # check if they are already installed and otherwise install them
   # note: this doesn't work for biocLite tools
@@ -31,11 +31,8 @@ general setup script to load all packages and install them if the are not alread
   rm(list.of.packages, new.packages)
 ```
 
-### Set the working directory and load the custom functions 
+### Set the working directory and then load the custom functions 
 ```{r, include=FALSE}
-  # set the working directory
-  setwd("~")
-
   source("./Scripts/variancePart.R")
   source("./Scripts/1_MergingData.R")
   source("./Scripts/2_localRegression.R")
@@ -44,7 +41,7 @@ general setup script to load all packages and install them if the are not alread
 ```
 
 ## Data merging
-Merge ABIDE I and ABIDE II into one dataframe taking all overlapping columns and adding in all anatomical data. In addition, this script runs basic matching using the nearest neighbour matching algorith from the match.it package (http://gking.harvard.edu/matchit). Finally it plots and writes out some descriptive statistics and created the basic output structure that subsequent function rely upon.
+Merge ABIDE I and ABIDE II into one dataframe taking all overlapping columns and adding in all anatomical data. In addition, this script runs basic matching using the nearest neighbour matching algorith from the match.it package (http://gking.harvard.edu/matchit). Finally it plots and writes out some descriptive statistics and creates the basic output structure that subsequent function rely upon.
 ```{r, include=FALSE}
 mergeData(measure = "CT", parcellation = "500aparc")
 ```
@@ -53,8 +50,8 @@ mergeData(measure = "CT", parcellation = "500aparc")
 This function runs variance partitioning (Hoffman & Schadt 2006: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5123296/) for the most common variables and prints the result to a PDF.
 ```{r, include=FALSE}
 varianceStats(measure = "CT", parcellation = "500aparc")
-
 ```
+![image](./Plots/VarianceContribution.pdf)
 
 ## Local regression and calculation of normative
 This function runs LOESS regression on the normative data, bins the data by age and then uses the age-bin specific mean to compute a w-score for all individuals with autism. The function also contains some plotting options to plot curves for every individual brain region, but to save time these are currently commented out.
@@ -64,8 +61,6 @@ localRegression(measure = "CT", parcellation = "500aparc")
 ```
 like this:
 ![image](./Plots/Overview2.png)
-
-
 ## Run stats
 This function: 
 * runs the canonical linear mixed effects model for conventional case-control analysis

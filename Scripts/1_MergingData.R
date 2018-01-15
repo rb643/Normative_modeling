@@ -1,5 +1,10 @@
 mergeData <- function(measure, parcellation,...) {
 
+base <- paste("./Output_",parcellation,sep="")
+if (!dir.exists(base))(
+    dir.create(base)
+  )
+  
 basedir <- paste("./Output_",parcellation,"/",measure,"_Age_IQ_Match/",sep="")
 if (!dir.exists(basedir))(
   dir.create(basedir)
@@ -84,23 +89,26 @@ write.csv(site,paste(basedir,"site_distribution_PreMatch.csv",sep=""))
 rm(site)
 
 # visualize the age distribition
-pdf(paste(basedir,"Age_Distribution_PreMatch.pdf",sep=""))
-ggplot(combinedData, aes(AGE_AT_SCAN, fill=DX_GROUP)) +
+p <- ggplot(combinedData, aes(AGE_AT_SCAN, fill=DX_GROUP)) +
   geom_density(alpha=.5) +
   xlab("Age") +
   ylab("Density") +
   scale_fill_manual(values = c('#999999','#E69F00')) +
   theme(legend.position = "top")
+
+pdf(paste(basedir,"Age_Distribution_PreMatch.pdf",sep=""))
+  print(p)
 dev.off()
 
 # visualize the IQ distribition
-pdf(paste(basedir,"IQ_Distribution_PreMatch.pdf",sep=""))
-ggplot(combinedData, aes(FIQ, fill=DX_GROUP)) +
+p <- ggplot(combinedData, aes(FIQ, fill=DX_GROUP)) +
   geom_density(alpha=.5) +
   xlab("FIQ") +
   ylab("Density") +
   scale_fill_manual(values = c('#999999','#E69F00')) +
   theme(legend.position = "top")
+pdf(paste(basedir,"IQ_Distribution_PreMatch.pdf",sep=""))
+  print(p)
 dev.off()
 
 # # test age differences (using permutation tests)
@@ -108,7 +116,7 @@ dev.off()
 # # test IQ differences (using permutation tests)
 # independence_test(FIQ ~ DX_GROUP, data = combinedData)
 
-save.image(file = paste(basedir,"Raw_CommonPheno.RData",sep=""))
+save(networkDataNames,combinedData,file = paste(basedir,"Raw_CommonPheno.RData",sep=""))
 
 ## matching
 combinedData$Group <- (combinedData$DX_GROUP == "Autism")# matchit needs a logical
@@ -131,13 +139,12 @@ combinedData <- combinedData[keepSubs,]
 
 rm(keepSubs,match.it,newData,tempData)
 
-save.image(file = paste(basedir,"Matched_Age_IQ_CommonPheno.RData",sep=""))
+save(networkDataNames,combinedData,file = paste(basedir,"Matched_Age_IQ_CommonPheno.RData",sep=""))
 
 ### do all checks again after matching ###
 # visualize the age distribition
 cbPalette2 <- viridis(2)
-pdf(paste(basedir,"Age_Distribution_PostMatch.pdf",sep=""))
-ggplot(combinedData, aes(AGE_AT_SCAN, fill=DX_GROUP)) +
+p <- ggplot(combinedData, aes(AGE_AT_SCAN, fill=DX_GROUP)) +
   geom_density(alpha=.5) +
   xlab("Age") +
   ylab("Density") +
@@ -159,11 +166,12 @@ ggplot(combinedData, aes(AGE_AT_SCAN, fill=DX_GROUP)) +
     legend.position = "bottom",
     legend.title=element_blank()
   )
+pdf(paste(basedir,"Age_Distribution_PostMatch.pdf",sep=""))
+  print(p)
 dev.off()
 
 # visualize the IQ distribition
-pdf(paste(basedir,"IQ_Distribution_PostMatch.pdf",sep=""))
-ggplot(combinedData, aes(FIQ, fill=DX_GROUP)) +
+p <- ggplot(combinedData, aes(FIQ, fill=DX_GROUP)) +
   geom_density(alpha=.5) +
   xlab("FIQ") +
   ylab("Density") +
@@ -185,7 +193,10 @@ ggplot(combinedData, aes(FIQ, fill=DX_GROUP)) +
     legend.position = "bottom",
     legend.title=element_blank()
   )
+pdf(paste(basedir,"IQ_Distribution_PostMatch.pdf",sep=""))
+  print(p)
 dev.off()
+
 rm(cbPalette2)
 
 # check the site distribution
