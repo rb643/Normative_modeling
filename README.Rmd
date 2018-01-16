@@ -31,7 +31,7 @@ General setup script to load all packages and install them if they are not alrea
   rm(list.of.packages, new.packages)
 ```
 
-## Set the working directory and then load the custom functions 
+#### Set the working directory to whichever directory you downloaded this repository to and then load the custom functions 
 ```{r, include=FALSE}
   source("./Scripts/variancePart.R")
   source("./Scripts/1_MergingData.R")
