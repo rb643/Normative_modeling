@@ -53,8 +53,8 @@ varianceStats(measure = "CT", parcellation = "500aparc")
 ```
 ![image](./Plots/VarianceContribution.png)
 
-## Local regression and calculation of normative
-This function runs LOESS regression on the normative data, bins the data by age and then uses the age-bin specific mean and standard deviation to compute a w-score for all individuals with autism. The function also contains some plotting options to plot curves for every individual brain region, but to save time these are currently commented out.
+## Local regression and calculation of normative scores
+This function runs LOESS regression on the normative data, bins the data by age and then uses the age-bin specific mean and standard deviation to compute a w-score for all individuals with autism. The function also contains some plotting options to plot curves for every individual brain region, but to save time these are currently commented out (printing 300+ pdfs takes quite long...).
 
 Like this:
 ![image](./Plots/Overview2.png)
@@ -80,4 +80,4 @@ symptomCorrelation(measure = "CT", parcellation = "500aparc")
 ```
 
 # Optional other functions
-The above function are all dependent on each other and should thus be run in succession. However, with other parcellations or metrics each step should also be doable using the mcparallel function
+The above functions are all dependent on each other and should thus be run in succession. However, with other parcellations or metrics each step should also be doable using the mcparallel function
