@@ -2,6 +2,7 @@
 title: "Normative modeling readme"
 author: "Richard"
 output: html_document
+doi: 10.5281/zenodo.1158023
 ---
 # Normative modeling in Autism - readme file
 
