@@ -19,7 +19,7 @@ General setup script to load all packages and install them if they are not alrea
             "viridis","coin","plyr","psytabs","RColorBrewer",
             "msir","lmtest", "ggpubr","stats", "reshape2","xtable",
             "ez","apa","parallel", "jmuOutlier","Rtsne","fpc", "cluster",
-            "RCurl","plyr","nlme")
+            "RCurl","nlme")
 
   # check if they are already installed and otherwise install them
   # note: this doesn't work for biocLite tools
@@ -62,11 +62,11 @@ Like this:
 localRegression(measure = "CT", parcellation = "500aparc")
 ```
 
-## Run stats
+## Run statistics
 This function: 
 * runs the canonical linear mixed effects model for conventional case-control analysis
 * runs the canonical linear mixed effects model for conventional case-control analysis, with w-score outliers removed
-* runs the a one-sample test on the w-scores (with scanner site regressed out), with outliers removed
+* runs the a one-sample test on the w-scores with outliers removed
 
 The resulting csv files were subsequently plotted using the whitakerlab pysurfer tools: https://github.com/WhitakerLab/BrainsForPublication
 ```{r, include=FALSE}

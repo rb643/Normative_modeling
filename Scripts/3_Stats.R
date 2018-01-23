@@ -58,11 +58,6 @@ colnames(MixedModel_Dx) <- c("F","P","CorrectedP","CohensD")
 write.csv(MixedModel_Dx, file = paste(anovadir,"/MixedModelDx.csv", sep=""), row.names = FALSE, col.names = FALSE)
 
 ## Linear Mixed-Effect models removing outliers
-load("./Output_500aparc/CT_Age_IQ_Match/W/CommonPheno_Wscores.RData")
-columnnames2 <- as.factor(paste(networkDataNames$V1,"_z",sep=""))
-combinedData.M <- subset(combinedData, SEX == "Male")
-combinedData.M.ASD <- subset(combinedData.M, DX_GROUP == "Autism")
-regressionData <- combinedData.M.ASD[,as.character(columnnames2)]
 df <- melt(combinedData, id.vars=c("DX_GROUP","SEX","SUB_ID","SITE_ID","AGE_AT_SCAN"), measure.vars = columnnames)
 Fv <- data.frame(Intercept=double(),
                  Dx=double(),
@@ -104,7 +99,12 @@ colnames(MixedModel_Dx) <- c("F","P","CorrectedP","CohensD")
 write.csv(MixedModel_Dx, file = paste(anovadir,"/MixedModelDx_Outliers.csv",sep=""), row.names = FALSE, col.names = FALSE)
 
 ## one sample test on w-scores
+load("./Output_500aparc/CT_Age_IQ_Match/W/CommonPheno_Wscores.RData")
+columnnames2 <- as.factor(paste(networkDataNames$V1,"_z",sep=""))
+combinedData.M <- subset(combinedData, SEX == "Male")
+combinedData.M.ASD <- subset(combinedData.M, DX_GROUP == "Autism")
 regressionData <- combinedData.M.ASD[,as.character(columnnames2)]
+
 r <- lm(as.matrix(regressionData)~as.factor(combinedData.M.ASD$SITE_ID))$residuals+colMeans(regressionData)
 ps <- matrix(NA,nrow = 308, ncol = 1)
 ts <- matrix(NA,nrow = 308, ncol = 1)
@@ -123,4 +123,5 @@ adjustedP <- p.adjust(ps, method = "fdr")
 WModel <- cbind(ps, adjustedP,e)
 colnames(WModel) <- c("p","adjusted_p","d")
 write.csv(MixedModel_Dx, file = paste(anovadir,"/WModel_Outliers.csv",sep=""), row.names = FALSE, col.names = FALSE)
+
 }
