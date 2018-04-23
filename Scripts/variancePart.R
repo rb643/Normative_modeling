@@ -31,7 +31,11 @@ violins <- plotVarPart(vp)
 
 
   pdf(file = paste(vdir,"VarianceContribution.pdf",sep=""), width = 24, height = 12)
-  multiplot(bars,violins,cols = 2)
+    multiplot(bars,violins,cols = 2)
+  dev.off()
+  
+  pdf(file = paste(vdir,"VarianceContribution_s.pdf",sep=""), width = 12, height = 7)
+    multiplot(bars,violins,cols = 2)
   dev.off()
 
 }

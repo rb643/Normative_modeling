@@ -10,6 +10,8 @@ if (!dir.exists(anovadir))(
 )
 
 load(paste(basedir,"Matched_Age_IQ_CommonPheno.RData",sep=""))
+combinedData.M <- subset(combinedData, SEX == "Male")
+combinedData.M.ASD <- subset(combinedData.M, DX_GROUP == "Autism")
 
 # select the columns that we want to compute z-scores on
 columnnames <- networkDataNames$V1
@@ -58,10 +60,15 @@ colnames(MixedModel_Dx) <- c("F","P","CorrectedP","CohensD")
 write.csv(MixedModel_Dx, file = paste(anovadir,"/MixedModelDx.csv", sep=""), row.names = FALSE, col.names = FALSE)
 
 ## Linear Mixed-Effect models removing outliers
-df <- melt(combinedData, id.vars=c("DX_GROUP","SEX","SUB_ID","SITE_ID","AGE_AT_SCAN"), measure.vars = columnnames)
+load(paste(zdir,"CommonPheno_Wscores.RData",sep=""))
+columnnames2 <- as.factor(paste(networkDataNames$V1,"_z",sep=""))
+combinedData.M <- subset(combinedData, SEX == "Male")
+combinedData.M.ASD <- subset(combinedData.M, DX_GROUP == "Autism")
+regressionData <- combinedData.M.ASD[,as.character(columnnames2)]
+
+df <- melt(combinedData.M, id.vars=c("DX_GROUP","SEX","SUB_ID","SITE_ID","AGE_AT_SCAN"), measure.vars = columnnames)
 Fv <- data.frame(Intercept=double(),
                  Dx=double(),
-                 Sx=double(),
                  Age=double(),
                  stringsAsFactors=FALSE)
 Pv <- Fv
@@ -74,7 +81,7 @@ for (i in unique(df$variable)){
   removeS <- combinedData.M.ASD[abs(combinedData.M.ASD[,zname]) > 2,]$SUB_ID
   df2 <- df2[ ! df2$SUB_ID %in% removeS, ]
   
-  m <- lme(fixed=value ~ DX_GROUP+SEX+AGE_AT_SCAN, 
+  m <- lme(fixed=value ~ DX_GROUP+AGE_AT_SCAN, 
            random = ~ 1|SITE_ID, data = df2, 
            control=lmeControl(singular.ok=TRUE,returnObject=TRUE))
   a <- anova(m)
@@ -82,7 +89,7 @@ for (i in unique(df$variable)){
   Pv <- rbind(Pv,a$`p-value`)
   DFv <- rbind(DFv,a$denDF)
   
-  tmp_m = lme(fixed=value ~ SEX+AGE_AT_SCAN, 
+  tmp_m = lme(fixed=value ~ AGE_AT_SCAN, 
               random = ~ 1|SITE_ID, data = df2, 
               control=lmeControl(singular.ok=TRUE,returnObject=TRUE))
   df2$resid = residuals(tmp_m)
@@ -99,7 +106,7 @@ colnames(MixedModel_Dx) <- c("F","P","CorrectedP","CohensD")
 write.csv(MixedModel_Dx, file = paste(anovadir,"/MixedModelDx_Outliers.csv",sep=""), row.names = FALSE, col.names = FALSE)
 
 ## one sample test on w-scores
-load("./Output_500aparc/CT_Age_IQ_Match/W/CommonPheno_Wscores.RData")
+load(paste(zdir,"CommonPheno_Wscores.RData",sep=""))
 columnnames2 <- as.factor(paste(networkDataNames$V1,"_z",sep=""))
 combinedData.M <- subset(combinedData, SEX == "Male")
 combinedData.M.ASD <- subset(combinedData.M, DX_GROUP == "Autism")

@@ -20,7 +20,7 @@ General setup script to load all packages and install them if they are not alrea
             "viridis","coin","plyr","psytabs","RColorBrewer",
             "msir","lmtest", "ggpubr","stats", "reshape2","xtable",
             "ez","apa","parallel", "jmuOutlier","Rtsne","fpc", "cluster",
-            "RCurl","nlme")
+            "RCurl","nlme","foreach","doParallel")
 
   # check if they are already installed and otherwise install them
   # note: this doesn't work for biocLite tools
@@ -44,13 +44,20 @@ General setup script to load all packages and install them if they are not alrea
 ## Data merging
 Merge ABIDE I and ABIDE II into one dataframe taking all overlapping columns and adding in all anatomical data. In addition, this script runs basic matching on age using the nearest neighbour matching algorithm from the match.it package (http://gking.harvard.edu/matchit). Finally it plots and writes out some descriptive statistics and creates the basic output structure that subsequent functions rely upon.
 ```{r, include=FALSE}
-mergeData(measure = "CT", parcellation = "500aparc")
+Job1 = mcparallel(mergeData(measure = "LGI", parcellation = "500aparc"))
+Job2 = mcparallel(mergeData(measure = "CT", parcellation = "500aparc"))
+Job3 = mcparallel(mergeData(measure = "Area", parcellation = "500aparc"))
+Job4 = mcparallel(mergeData(measure = "Vol", parcellation = "500aparc"))
+mccollect(list(Job1, Job2, Job3, Job4))
 ```
 
 ## Data inspection
 This function runs variance partitioning (Hoffman & Schadt 2006: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5123296/) for the most common variables and prints the result to a PDF.
 ```{r, include=FALSE}
+varianceStats(measure = "LGI", parcellation = "500aparc")
 varianceStats(measure = "CT", parcellation = "500aparc")
+varianceStats(measure = "Area", parcellation = "500aparc")
+varianceStats(measure = "Vol", parcellation = "500aparc")
 ```
 ![image](./Plots/VarianceContribution.png)
 
@@ -60,25 +67,42 @@ This function runs LOESS regression on the normative data, bins the data by age 
 Like this:
 ![image](./Plots/Overview2.png)
 ```{r, include=FALSE}
-localRegression(measure = "CT", parcellation = "500aparc")
+Job1 = mcparallel(localRegression(measure = "LGI", parcellation = "500aparc"))
+Job2 = mcparallel(localRegression(measure = "CT", parcellation = "500aparc"))
+Job3 = mcparallel(localRegression(measure = "Area", parcellation = "500aparc"))
+Job4 = mcparallel(localRegression(measure = "Vol", parcellation = "500aparc"))
+mccollect(list(Job1, Job2, Job3, Job4))
 ```
 
 ## Run statistics
 This function: 
 * runs the canonical linear mixed effects model for conventional case-control analysis
 * runs the canonical linear mixed effects model for conventional case-control analysis, with w-score outliers removed
-* runs the a one-sample test on the w-scores with outliers removed
+* runs the one-sample test on the w-scores with outliers removed
 
 The resulting csv files were subsequently plotted using the whitakerlab pysurfer tools: https://github.com/WhitakerLab/BrainsForPublication
 ```{r, include=FALSE}
-basicStats(measure = "CT", parcellation = "500aparc")
+Job1 = mcparallel(basicStats(measure = "LGI", parcellation = "500aparc"))
+Job2 = mcparallel(basicStats(measure = "CT", parcellation = "500aparc"))
+Job3 = mcparallel(basicStats(measure = "Area", parcellation = "500aparc"))
+Job4 = mcparallel(basicStats(measure = "Vol", parcellation = "500aparc"))
+mccollect(list(Job1, Job2, Job3, Job4))
 ```
 
 ## Symptom*W-Score correlation
 This computes spearman correlation between w-scores and most common phenotypic variables
 ```{r, include=FALSE}
-symptomCorrelation(measure = "CT", parcellation = "500aparc")
+Job1 = mcparallel(symptomCorrelation(measure = "LGI", parcellation = "500aparc"))
+Job2 = mcparallel(symptomCorrelation(measure = "CT", parcellation = "500aparc"))
+Job3 = mcparallel(symptomCorrelation(measure = "Area", parcellation = "500aparc"))
+Job4 = mcparallel(symptomCorrelation(measure = "Vol", parcellation = "500aparc"))
+mccollect(list(Job1, Job2, Job3, Job4))
 ```
 
 # Optional other functions
-The above functions are all dependent on each other and should thus be run in succession. However, with other parcellations or metrics each step should also be doable using the mcparallel function
+The above functions are all dependent on each other and should thus be run in succession. However, with other parcellations or metrics each step is split across cores using the mcparallel function
+
+# Release notes
+This code has been tested with RStudio 3.4.1 on the following OS+Systems: 
+Mac OS 10.12.6, 3.1Ghz i7 2*DualCore with 16GB RAM
+Ubuntu 16.04, 3.1Ghz i9 14*DualCore with 64GB RAM
