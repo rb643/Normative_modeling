@@ -17,11 +17,13 @@ General setup script to load all packages and install them if they are not alrea
   # get a list of all potentially useful packages
   list.of.packages <- c("Hmisc","ggplot2","caret","gplots","Rmisc","dplyr",
             "MatchIt","optmatch","data.table","plotrix","ggthemes",
-            "viridis","coin","plyr","psytabs","RColorBrewer",
+            "viridis","coin","plyr","psytabs","RColorBrewer","boot",
             "msir","lmtest", "ggpubr","stats", "reshape2","xtable",
             "ez","apa","parallel", "jmuOutlier","Rtsne","fpc", "cluster",
-            "RCurl","nlme","foreach","doParallel")
+            "RCurl","nlme","foreach","doParallel", "gridExtra","cowplot")
 
+  source("https://bit.ly/2q4XQ66")
+  
   # check if they are already installed and otherwise install them
   # note: this doesn't work for biocLite tools
   new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
@@ -34,7 +36,9 @@ General setup script to load all packages and install them if they are not alrea
 
 #### Set the working directory to whichever directory you downloaded this repository to and then load the custom functions 
 ```{r, include=FALSE}
-  source("./Scripts/variancePart.R")
+  source("./Scripts/_variancePart.R")
+  source("./Scripts/_computeRatios.R")
+  source("./Scripts/_tsneParcellaton.R")
   source("./Scripts/1_MergingData.R")
   source("./Scripts/2_localRegression.R")
   source("./Scripts/3_Stats.R")
@@ -54,10 +58,10 @@ mccollect(list(Job1, Job2, Job3, Job4))
 ## Data inspection
 This function runs variance partitioning (Hoffman & Schadt 2006: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5123296/) for the most common variables and prints the result to a PDF.
 ```{r, include=FALSE}
-varianceStats(measure = "LGI", parcellation = "500aparc")
-varianceStats(measure = "CT", parcellation = "500aparc")
-varianceStats(measure = "Area", parcellation = "500aparc")
-varianceStats(measure = "Vol", parcellation = "500aparc")
+varianceStats(measure = "LGI", parcellation = "500aparc", threshold = TRUE)
+varianceStats(measure = "CT", parcellation = "500aparc", threshold = TRUE)
+varianceStats(measure = "Area", parcellation = "500aparc", threshold = TRUE)
+varianceStats(measure = "Vol", parcellation = "500aparc", threshold = TRUE)
 ```
 ![image](./Plots/VarianceContribution.png)
 
@@ -65,12 +69,12 @@ varianceStats(measure = "Vol", parcellation = "500aparc")
 This function runs LOESS regression on the normative data, bins the data by age and then uses the age-bin specific mean and standard deviation to compute a w-score for all individuals with autism. The function also contains some plotting options to plot curves for every individual brain region, but to save time these are currently commented out (printing 300+ pdfs takes quite long...).
 
 Like this:
-![image](./Plots/Overview2.png)
+![image](./Plots/Overview3.png)
 ```{r, include=FALSE}
-Job1 = mcparallel(localRegression(measure = "LGI", parcellation = "500aparc"))
-Job2 = mcparallel(localRegression(measure = "CT", parcellation = "500aparc"))
-Job3 = mcparallel(localRegression(measure = "Area", parcellation = "500aparc"))
-Job4 = mcparallel(localRegression(measure = "Vol", parcellation = "500aparc"))
+Job1 = mcparallel(localRegression(measure = "LGI", parcellation = "500aparc", threshold = TRUE))
+Job2 = mcparallel(localRegression(measure = "CT", parcellation = "500aparc", threshold = TRUE))
+Job3 = mcparallel(localRegression(measure = "Area", parcellation = "500aparc", threshold = TRUE))
+Job4 = mcparallel(localRegression(measure = "Vol", parcellation = "500aparc", threshold = TRUE))
 mccollect(list(Job1, Job2, Job3, Job4))
 ```
 
@@ -82,12 +86,35 @@ This function:
 
 The resulting csv files were subsequently plotted using the whitakerlab pysurfer tools: https://github.com/WhitakerLab/BrainsForPublication
 ```{r, include=FALSE}
-Job1 = mcparallel(basicStats(measure = "LGI", parcellation = "500aparc"))
-Job2 = mcparallel(basicStats(measure = "CT", parcellation = "500aparc"))
-Job3 = mcparallel(basicStats(measure = "Area", parcellation = "500aparc"))
-Job4 = mcparallel(basicStats(measure = "Vol", parcellation = "500aparc"))
+Job1 = mcparallel(basicStats(measure = "LGI", parcellation = "500aparc", threshold = TRUE))
+Job2 = mcparallel(basicStats(measure = "CT", parcellation = "500aparc", threshold = TRUE))
+Job3 = mcparallel(basicStats(measure = "Area", parcellation = "500aparc", threshold = TRUE))
+Job4 = mcparallel(basicStats(measure = "Vol", parcellation = "500aparc", threshold = TRUE))
 mccollect(list(Job1, Job2, Job3, Job4))
 ```
+
+## Multi-Dimensional embedding & clustering
+Barnes-Hut tSNE (Maaten, 2014) was used to construct a 2-dimensional embedding for all parcels in order to be able to run k-medoid clustering in a 2D representation. Next, we performed partitioning around medoids (PAM), estimating the optimum number of clusters using the optimum average silhouette width (Hennig and Liao, 2013).
+
+```{r, include=FALSE}
+Job1 = mcparallel(tsneParcellation(measure = "LGI", parcellation = "500aparc", threshold = TRUE))
+Job2 = mcparallel(tsneParcellation(measure = "CT", parcellation = "500aparc", threshold = TRUE))
+Job3 = mcparallel(tsneParcellation(measure = "Area", parcellation = "500aparc", threshold = TRUE))
+Job4 = mcparallel(tsneParcellation(measure = "Vol", parcellation = "500aparc", threshold = TRUE))
+mccollect(list(Job1, Job2, Job3, Job4))
+```
+
+## W-Score Ratio
+As a summary measure we computed a ratio of absolute w-scores between those that were bigger and smaller than 2. Thus a ratio of >0.5 indicates that for that individual there were more regions with a w-score > 2.
+
+```{r, include=FALSE}
+Job1 = mcparallel(computeRatios(measure = "LGI", parcellation = "500aparc", threshold = TRUE))
+Job2 = mcparallel(computeRatios(measure = "CT", parcellation = "500aparc", threshold = TRUE))
+Job3 = mcparallel(computeRatios(measure = "Area", parcellation = "500aparc", threshold = TRUE))
+Job4 = mcparallel(computeRatios(measure = "Vol", parcellation = "500aparc", threshold = TRUE))
+mccollect(list(Job1, Job2, Job3, Job4))
+```
+
 
 ## Symptom*W-Score correlation
 This computes spearman correlation between w-scores and most common phenotypic variables
@@ -99,8 +126,19 @@ Job4 = mcparallel(symptomCorrelation(measure = "Vol", parcellation = "500aparc")
 mccollect(list(Job1, Job2, Job3, Job4))
 ```
 
+## Prevalence and ratio of w-scores
+This function computes the ratio of positive and negative w-scores for each individual. In addition, it computes the prevalence of statistical outliers (defined as w>2).
+```{r, include=FALSE}
+Job1 = mcparallel(computeRatios(measure = "LGI", parcellation = "500aparc", threshold = TRUE))
+Job2 = mcparallel(computeRatios(measure = "CT", parcellation = "500aparc", threshold = TRUE))
+Job3 = mcparallel(computeRatios(measure = "Area", parcellation = "500aparc", threshold = TRUE))
+Job4 = mcparallel(computeRatios(measure = "Vol", parcellation = "500aparc", threshold = TRUE))
+mccollect(list(Job1, Job2, Job3, Job4))
+```
+
 # Optional other functions
-The above functions are all dependent on each other and should thus be run in succession. However, with other parcellations or metrics each step is split across cores using the mcparallel function
+1. *_normscores.R*: this is a slightly more generic function version of the *localRegression.R* script to compute the w-scores for the patient group. It returns a subject^brainregion matrix of w-scores
+2. *_bootRegressPar.R*: this function just calls the *_normscores.R* function in a parallel loop to bootstrap (with replacement) the w-score computation and saves the full bootstrapped matrix (subject^region^bootstrap) as well as the standard deviation across the bootstrap dimension. Note that with 308 regions, 700+ subjects and 1000 bootstraps this matrix is well over 1.5Gb.
 
 # Release notes
 This code has been tested with RStudio 3.4.1 on the following OS+Systems: 

@@ -1,8 +1,15 @@
-symptomCorrelation <- function(measure, parcellation,...) {
+symptomCorrelation <- function(measure, parcellation, threshold, ...) {
 
   basedir <- paste("./Output_",parcellation,"/",measure,"_Age_IQ_Match/",sep="")
-  outdir <- paste(basedir,"SymptomCorrelation/",sep="")
-  load(paste(basedir,"W/","CommonPheno_Wscores.RData",sep=""))
+  
+   if (threshold == TRUE){
+     load(paste(basedir,"W_Threshold/","CommonPheno_Wscores.RData",sep=""))  
+     outdir <- paste(basedir,"SymptomCorrelation_Threshold/",sep="")
+  } else if (threshold == FALSE) {
+    load(paste(basedir,"W/","CommonPheno_Wscores.RData",sep=""))
+    outdir <- paste(basedir,"SymptomCorrelation/",sep="")
+  } 
+  
 
   if (!dir.exists(outdir))(
     dir.create(outdir)

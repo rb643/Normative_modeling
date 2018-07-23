@@ -1,8 +1,14 @@
-localRegression <- function(measure, parcellation,...) {
+localRegression <- function(measure, parcellation, threshold,...) {
 
   basedir <- paste("./Output_",parcellation,"/",measure,"_Age_IQ_Match/",sep="")
-  zdir <- paste(basedir,"W/",sep="")
-  load(paste(basedir,"Matched_Age_IQ_CommonPheno.RData",sep=""))
+  
+  if (threshold == TRUE){
+    load(paste(basedir,"Matched_Age_IQ_CommonPheno_Thresholded.RData",sep=""))  
+    zdir <- paste(basedir,"W_Threshold/",sep="")
+   } else if (threshold == FALSE) {
+    load(paste(basedir,"Matched_Age_IQ_CommonPheno.RData",sep=""))
+     zdir <- paste(basedir,"W/",sep="")
+   } 
 
   if (!dir.exists(zdir))(
     dir.create(zdir)
