@@ -119,10 +119,10 @@ mccollect(list(Job1, Job2, Job3, Job4))
 ## Symptom*W-Score correlation
 This computes spearman correlation between w-scores and most common phenotypic variables
 ```{r, include=FALSE}
-Job1 = mcparallel(symptomCorrelation(measure = "LGI", parcellation = "500aparc"))
-Job2 = mcparallel(symptomCorrelation(measure = "CT", parcellation = "500aparc"))
-Job3 = mcparallel(symptomCorrelation(measure = "Area", parcellation = "500aparc"))
-Job4 = mcparallel(symptomCorrelation(measure = "Vol", parcellation = "500aparc"))
+Job1 = mcparallel(symptomCorrelation(measure = "LGI", parcellation = "500aparc", threshold = TRUE))
+Job2 = mcparallel(symptomCorrelation(measure = "CT", parcellation = "500aparc", threshold = TRUE))
+Job3 = mcparallel(symptomCorrelation(measure = "Area", parcellation = "500aparc", threshold = TRUE))
+Job4 = mcparallel(symptomCorrelation(measure = "Vol", parcellation = "500aparc", threshold = TRUE))
 mccollect(list(Job1, Job2, Job3, Job4))
 ```
 
@@ -138,9 +138,9 @@ mccollect(list(Job1, Job2, Job3, Job4))
 
 # Optional other functions
 1. *_normscores.R*: this is a slightly more generic function version of the *localRegression.R* script to compute the w-scores for the patient group. It returns a subject^brainregion matrix of w-scores
-2. *_bootRegressPar.R*: this function just calls the *_normscores.R* function in a parallel loop to bootstrap (with replacement) the w-score computation and saves the full bootstrapped matrix (subject^region^bootstrap) as well as the standard deviation across the bootstrap dimension. Note that with 308 regions, 700+ subjects and 1000 bootstraps this matrix is well over 1.5Gb.
+2. *_bootRegressPar.R*: this function just calls the *_normscores.R* function in a parallel loop to bootstrap (with replacement) the w-score computation and saves the full bootstrapped matrix (subject^region^bootstrap) as well as the standard deviation across the bootstrap dimension. Note that with 308 regions, 700+ subjects and 1000 bootstraps this matrix is well over 1.5Gb. Also, note that running this on a i9 14 dualcore machine took about 3 hours (so on a laptop it would likely take 1-2 days).
 
 # Release notes
 This code has been tested with RStudio 3.4.1 on the following OS+Systems: 
-Mac OS 10.12.6, 3.1Ghz i7 2*DualCore with 16GB RAM
-Ubuntu 16.04, 3.1Ghz i9 14*DualCore with 64GB RAM
+- Mac OS 10.12.6, 3.1Ghz i7 2*DualCore with 16GB RAM
+- Ubuntu 16.04, 3.1Ghz i9 14*DualCore with 64GB RAM

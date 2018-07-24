@@ -31,7 +31,7 @@ combinedData.F.ASD <- subset(combinedData.F, DX_GROUP == "Autism")
 # compute pairwise correlations
 correlationData <- combinedData.M.ASD[,variables2]
 
-# check for remaining NA's
+# check for remaining NA's and rows with too few datapoints to compute a sd
 check <- !is.na(sapply(correlationData,function(x) standarderror((x))))
 correlationData <- correlationData[,check]
 
