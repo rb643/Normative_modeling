@@ -104,18 +104,6 @@ Job4 = mcparallel(tsneParcellation(measure = "Vol", parcellation = "500aparc", t
 mccollect(list(Job1, Job2, Job3, Job4))
 ```
 
-## W-Score Ratio
-As a summary measure we computed a ratio of absolute w-scores between those that were bigger and smaller than 2. Thus a ratio of >0.5 indicates that for that individual there were more regions with a w-score > 2.
-
-```{r, include=FALSE}
-Job1 = mcparallel(computeRatios(measure = "LGI", parcellation = "500aparc", threshold = TRUE))
-Job2 = mcparallel(computeRatios(measure = "CT", parcellation = "500aparc", threshold = TRUE))
-Job3 = mcparallel(computeRatios(measure = "Area", parcellation = "500aparc", threshold = TRUE))
-Job4 = mcparallel(computeRatios(measure = "Vol", parcellation = "500aparc", threshold = TRUE))
-mccollect(list(Job1, Job2, Job3, Job4))
-```
-
-
 ## Symptom*W-Score correlation
 This computes spearman correlation between w-scores and most common phenotypic variables
 ```{r, include=FALSE}
@@ -127,7 +115,10 @@ mccollect(list(Job1, Job2, Job3, Job4))
 ```
 
 ## Prevalence and ratio of w-scores
-This function computes the ratio of positive and negative w-scores for each individual. In addition, it computes the prevalence of statistical outliers (defined as w>2).
+This function computes the ratio of positive and negative w-scores for each individual. As a summary measure we computed a ratio of absolute w-scores between those that were bigger and smaller than 2. Thus a ratio of >0.5 indicates that for that individual there were more regions with a w-score > 2. In addition, it computes the prevalence of statistical outliers (defined as w>2).
+
+Like this:
+![image](./Plots/Prevalence.png)
 ```{r, include=FALSE}
 Job1 = mcparallel(computeRatios(measure = "LGI", parcellation = "500aparc", threshold = TRUE))
 Job2 = mcparallel(computeRatios(measure = "CT", parcellation = "500aparc", threshold = TRUE))
