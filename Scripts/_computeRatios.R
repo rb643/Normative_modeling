@@ -131,4 +131,8 @@ dev.off()
 rs <- cbind((ratio), combinedData.M.ASD$SUB_ID)
 write.csv(rs,paste(rdir,"Prevalence.csv"),sep = "", col.names = FALSE)
 
+
+rs2 <- cbind((ratioSpatial), combinedData.M.ASD$SUB_ID)
+write.csv(rs2,paste(rdir,"Region_Prevalence.csv"),sep = "", col.names = FALSE)
+
 }
