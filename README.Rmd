@@ -1,10 +1,13 @@
 ---
-title: "Normative modeling readme"
+title: "Normative modeling"
 author: "Richard"
 output: html_document
-doi: 10.5281/zenodo.1158023
+doi: 10.5281/zenodo.1325171
 ---
 # Normative modeling in Autism - readme file
+This repository accompanies the paper *"Normative age modelling of cortical thickness in autistic males"* currently under review. When using code from this repository please cite as follows:
+
+> Richard A.I. Bethlehem, Jakob Seidlitz, Rafael Romero-Garcia, Guillaume Dumas, & Michael V. Lombardo. (2018, August 1). Normative age modelling of cortical thickness in autistic males (Version V2.1). Zenodo. http://doi.org/10.5281/zenodo.1325171
 
 ## Setup
 General setup script to load all packages and install them if they are not already on your system
