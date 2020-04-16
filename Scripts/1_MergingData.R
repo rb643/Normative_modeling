@@ -4,7 +4,7 @@ base <- paste("./Output_",parcellation,sep="")
 if (!dir.exists(base))(
     dir.create(base)
   )
-  
+
 basedir <- paste("./Output_",parcellation,"/",measure,"_Age_IQ_Match/",sep="")
 if (!dir.exists(basedir))(
   dir.create(basedir)
@@ -61,7 +61,7 @@ colnames(networkData1) <- networkDataNames$V1
 colnames(networkData2) <- networkDataNames$V1
 
 # add the Euler QC metrics
-Euler1 <- read.csv("./Data/abide_1_holes.csv", header = FALSE) 
+Euler1 <- read.csv("./Data/abide_1_holes.csv", header = FALSE)
 Euler2 <- read.csv("./Data/abide_2_holes.csv", header = FALSE)
 Euler1 <- cbind(networkDataSubs1,Euler1)
 Euler2 <- cbind(networkDataSubs2,Euler2)
@@ -231,7 +231,7 @@ d1 <- cohens_d(x,y, DIM = 1)
 
 P_left <- ggplot(data = combinedData, aes(y = Euler_Left, x = DX_GROUP, fill = DX_GROUP)) +
   geom_flat_violin(position = position_nudge(x = .2, y = 0), alpha = .6) +
-  geom_point(aes(y = Euler_Left, color = DX_GROUP), position = position_jitter(width = .15), 
+  geom_point(aes(y = Euler_Left, color = DX_GROUP), position = position_jitter(width = .15),
              size = 1, alpha = 0.6) +
   geom_boxplot(width = .1, guides = FALSE, outlier.shape = NA, alpha = 0.5) +
   expand_limits(x = 3.25) +
@@ -239,7 +239,7 @@ P_left <- ggplot(data = combinedData, aes(y = Euler_Left, x = DX_GROUP, fill = D
   guides(color = FALSE) +
   ggtitle(paste("MeanDiff = ",round(t1$statistic,3),
           "\n P = ", round(t1$p.value,6),
-          "\n Cohens d =", round(d1,3))) + 
+          "\n Cohens d =", round(d1,3))) +
   ylab("Euler - LH") +
   theme_bw() +
   theme(axis.title.x=element_blank())
@@ -251,7 +251,7 @@ d2 <- cohens_d(x,y, DIM = 1)
 
 P_right <- ggplot(data = combinedData, aes(y = Euler_Right, x = DX_GROUP, fill = DX_GROUP)) +
   geom_flat_violin(position = position_nudge(x = .2, y = 0), alpha = .6) +
-  geom_point(aes(y = Euler_Right, color = DX_GROUP), position = position_jitter(width = .15), 
+  geom_point(aes(y = Euler_Right, color = DX_GROUP), position = position_jitter(width = .15),
              size = 1, alpha = 0.6) +
   geom_boxplot(width = .1, guides = FALSE, outlier.shape = NA, alpha = 0.5) +
   expand_limits(x = 3.25) +
@@ -259,14 +259,14 @@ P_right <- ggplot(data = combinedData, aes(y = Euler_Right, x = DX_GROUP, fill =
   guides(color = FALSE) +
   ggtitle(paste("MeanDiff = ",round(t2$statistic,3),
                 "\n P = ", round(t2$p.value,6),
-                "\n Cohens d =", round(d2,3))) + 
+                "\n Cohens d =", round(d2,3))) +
   ylab("Euler - RH") +
   theme_bw() +
   theme(axis.title.x=element_blank())
 
 E_Site_Left <- ggplot(data = combinedData, aes(y = Euler_Left, x = SITE_ID, fill = SITE_ID)) +
   geom_flat_violin(position = position_nudge(x = .2, y = 0), alpha = .6) +
-  geom_point(aes(y = Euler_Left, color = SITE_ID), position = position_jitter(width = .15), 
+  geom_point(aes(y = Euler_Left, color = SITE_ID), position = position_jitter(width = .15),
              size = 1, alpha = 0.6) +
   geom_boxplot(width = .1, guides = FALSE, outlier.shape = NA, alpha = 0.5) +
   expand_limits(x = 3.25) +
@@ -279,7 +279,7 @@ E_Site_Left <- ggplot(data = combinedData, aes(y = Euler_Left, x = SITE_ID, fill
 
 E_Site_Right <- ggplot(data = combinedData, aes(y = Euler_Right, x = SITE_ID, fill = SITE_ID)) +
   geom_flat_violin(position = position_nudge(x = .2, y = 0), alpha = .6) +
-  geom_point(aes(y = Euler_Right, color = SITE_ID), position = position_jitter(width = .15), 
+  geom_point(aes(y = Euler_Right, color = SITE_ID), position = position_jitter(width = .15),
              size = 1, alpha = 0.6) +
   geom_boxplot(width = .1, guides = FALSE, outlier.shape = NA, alpha = 0.5) +
   expand_limits(x = 3.25) +
@@ -307,6 +307,15 @@ combinedData_Thresholded$Site <- as.numeric(combinedData_Thresholded$SITE_ID)
 tempData <- combinedData_Thresholded[,c("SUB_ID","AGE_AT_SCAN","Group","FIQ","Site")] # matchit can't deal with missing data in non-covariates so create a temporary subset
 match.it <- matchit(Group ~ AGE_AT_SCAN + FIQ, data = tempData, method = "nearest")
 
+## check matching on Euler
+df <- combinedData[,c("SUB_ID","Group","Euler_Left","Euler_Right")]
+zz <- matchit(Group ~ Euler_Left + Euler_Right, data=df, method="genetic",
+                         distance="mahalanobis", replace=F)
+
+                         write.csv(summary(zz)$nn,paste(basedir,"GeneMatchN_PostThreshold.csv",sep=""))
+                         write.csv(summary(zz)$sum.all,paste(basedir,"GeneMatchStatsPreMatch_PostThreshold.csv",sep=""))
+                         write.csv(summary(zz)$sum.matched,paste(basedir,"SGeneMatchStatsPostMatch_PostThreshold.csv",sep=""))
+
 # write the matching stats to a csv file
 write.csv(summary(match.it)$nn,paste(basedir,"SampleMatchingN_PostThreshold.csv",sep=""))
 write.csv(summary(match.it)$sum.all,paste(basedir,"SampleStatsPreMatch_PostThreshold.csv",sep=""))
@@ -325,7 +334,7 @@ save(networkDataNames,combinedData,file = paste(basedir,"Matched_Age_IQ_CommonPh
 # check the site distribution
 site_id <- ddply(combinedData,~DX_GROUP+SITE_ID,summarise,count=n())
 
-site_distr <- ggplot(site_id, aes(x = SITE_ID, y = count, fill = DX_GROUP)) + 
+site_distr <- ggplot(site_id, aes(x = SITE_ID, y = count, fill = DX_GROUP)) +
   geom_bar(stat = "identity") +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1),
