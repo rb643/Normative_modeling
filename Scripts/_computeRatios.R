@@ -119,10 +119,10 @@ for (i in 1:ncol(regressionData)){
 
 dataf <- as.data.frame(t(ratioSpatial))
 prev <- ggplot(dataf,aes(V1, fill = pcol)) + 
-  geom_density(alpha = 0.8) +
+  geom_density(alpha = 0.8) + theme_minimal() +
   xlab("Percentage of subjects with atypical w-score") + ylab("number of \n brain regions") +
-  theme_grey() +
-  theme(legend.position = "none")
+  ggtitle(paste0("Median prevalence: ", round(median(dataf$V1),3))) +
+  theme(legend.position = 'none') 
 
 pdf(paste(rdir,"Prevalence.pdf",sep=""), width = 10, height = 2.5)
   print(prev)
