@@ -5,7 +5,11 @@ output: html_document
 doi: 10.5281/zenodo.1325171
 ---
 # Normative modeling in Autism - readme file
-This repository accompanies the paper *"Normative age modelling of cortical thickness in autistic males"* currently under review. When using code from this repository please cite as follows:
+This repository accompanies the paper:
+
+Bethlehem, R.A.I., Seidlitz, J., Romero-Garcia, R. et al. A normative modelling approach reveals age-atypical cortical thickness in a subgroup of males with autism spectrum disorder. Commun Biol 3, 486 (2020). https://doi.org/10.1038/s42003-020-01212-9
+
+When using code from this repository please cite as follows:
 
 > Richard A.I. Bethlehem, Jakob Seidlitz, Rafael Romero-Garcia, Guillaume Dumas, & Michael V. Lombardo. (2018, August 1). Normative age modelling of cortical thickness in autistic males (Version V2.1). Zenodo. http://doi.org/10.5281/zenodo.1325171
 
